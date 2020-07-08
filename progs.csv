@@ -7,7 +7,7 @@
 #,xorg-xprop,"is a tool for detecting window properties."
 ,libx11-xcb-dev,"required."
 ,libxft-dev,"required."
-,libxcb-res0-dev
+,libxcb-res0-dev,"required."
 ,dosfstools,"allows your computer to access dos-like filesystems."
 ,libnotify,"allows desktop notifications."
 ,dunst,"is a suckless notification system."
