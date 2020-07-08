@@ -26,7 +26,7 @@ if type xbps-install >/dev/null 2>&1; then
 	grepseq="\"^[PGV]*,\""
 elif type apt >/dev/null 2>&1; then
 	distro="debian"
-	installpkg(){ apt-get install -y "$1" >/dev/null 2>&1 ;}
+	installpkg(){ apt-get install -y -q "$1" >/dev/null 2>&1 ;}
 	grepseq="\"^[PG ]*,\""
 else
 	distro="arch"
@@ -95,12 +95,26 @@ newperms() { # Set special sudoers settings for install (or after).
 	# sudo -u "$name" make >/dev/null 2>&1
 	# cd /tmp || return) ;}
 
-# installpamixer() { #Manually install pamixer on Debian with git
-	# [ -f "/usr/bin/$1" ] || {
-	# git clone --depth 1 /usr/bin/
- 	# cd /usr/bin/$1
-	# sudo -u "$name" make >/dev/null 2>&1
-	# return;}
+lfinstall() {
+	 [ -f "/usr/local/bin/$1" ] || (
+	 dialog --infobox "Installing \"$1\", a file manager..." 4 50
+	 cd /tmp || exit
+	 rm -rf /tmp/"$1"*
+	 wget https://github.com/gokcehan/lf/releases/download/r8/lf-linux-amd64.tar.gz -O "$1".tar.gz &&
+	 sudo -u "$name" tar -xvf "$1".tar.gz >/dev/null 2>&1 &&
+	 chmod +x "$1" >/dev/null 2>&1 &&
+	 mv "$1" /usr/local/bin
+	 cd /tmp || return) ;}
+
+pamixerinstall() {
+	 [ -f "/usr/local/bin/$1" ] || (
+	 dialog --infobox "Installing \"$1\", pulseaudio command line mixer..." 4 50
+	 cd /tmp || exit
+	 rm -rf /tmp/"$1"*
+         git clone https://github.com/cdemoulins/pamixer.git &&
+	 cd "$1"
+	 sudo make install >/dev/null 2>&1
+	 cd /tmp || return) ;}
 
 maininstall() { # Installs all needed programs from main repo.
 	dialog --title "LARBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 5 70
@@ -219,7 +233,8 @@ ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 #	manualinstall $aurhelper || error "Failed to install AUR helper."
 	}
 
-#installpamixer pamixer
+lfinstall lf || exit
+pamixerinstall pamixer || exit
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
