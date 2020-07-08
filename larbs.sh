@@ -10,13 +10,13 @@ while getopts ":a:r:b:p:h" o; do case "${o}" in
 	r) dotfilesrepo=${OPTARG} && git ls-remote "$dotfilesrepo" || exit ;;
 	b) repobranch=${OPTARG} ;;
 	p) progsfile=${OPTARG} ;;
-	a) aurhelper=${OPTARG} ;;
+        #a) aurhelper=${OPTARG} ;;
 	*) printf "Invalid option: -%s\\n" "$OPTARG" && exit ;;
 esac done
 
 [ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/lukesmithxyz/voidrice.git"
-[ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/LukeSmithxyz/LARBS/master/progs.csv"
-[ -z "$aurhelper" ] && aurhelper="yay"
+[ -z "$progsfile" ] && progsfile="https://github.com/VoxFlow/LARBS-for-Debian/blob/master/progs.csv"
+#[ -z "$aurhelper" ] && aurhelper="yay"
 [ -z "$repobranch" ] && repobranch="master"
 
 ### FUNCTIONS ###
@@ -68,6 +68,7 @@ preinstallmsg() { \
 adduserandpass() { \
 	# Adds user `$name` with password $pass1.
 	dialog --infobox "Adding user \"$name\"..." 4 50
+	groupadd wheel
 	useradd -m -g wheel -s /bin/bash "$name" >/dev/null 2>&1 ||
 	usermod -a -G wheel "$name" && mkdir -p /home/"$name" && chown "$name":wheel /home/"$name"
 	repodir="/home/$name/.local/src"; mkdir -p "$repodir"; chown -R "$name":wheel $(dirname "$repodir")
@@ -94,12 +95,12 @@ newperms() { # Set special sudoers settings for install (or after).
 	# sudo -u "$name" make >/dev/null 2>&1
 	# cd /tmp || return) ;}
 
-installpamixer() { #Manually install pamixer on Debian with git
-	[ -f "/usr/bin/$1" ] || (
-	git clone --depth 1 /usr/bin/
- 	cd /usr/bin/$1
-	sudo -u "$name" make >/dev/null 2>&1
-	}
+# installpamixer() { #Manually install pamixer on Debian with git
+	# [ -f "/usr/bin/$1" ] || {
+	# git clone --depth 1 /usr/bin/
+ 	# cd /usr/bin/$1
+	# sudo -u "$name" make >/dev/null 2>&1
+	# return;}
 
 maininstall() { # Installs all needed programs from main repo.
 	dialog --title "LARBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 5 70
@@ -194,6 +195,10 @@ installpkg base-devel
 installpkg git
 installpkg ntp
 
+#Update and Upgrade to make sure everything works:
+dialog --title "Update then Upgrade" --infobox "..." 5 70
+installpkg update && installpkg upgrade
+
 dialog --title "LARBS Installation" --infobox "Synchronizing system time to ensure successful and secure installation of software..." 4 70
 ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 
@@ -214,7 +219,7 @@ ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 #	manualinstall $aurhelper || error "Failed to install AUR helper."
 	}
 
-installpamixer pamixer
+#installpamixer pamixer
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
@@ -236,6 +241,9 @@ git update-index --assume-unchanged "/home/$name/FUNDING.yml"
 # Most important command! Get rid of the beep!
 systembeepoff
 
+#Disable lightdm:
+systemctl disable lighdm
+
 # Make zsh the default shell for the user.
 chsh -s /bin/zsh $name >/dev/null 2>&1
 sudo -u "$name" mkdir -p "/home/$name/.cache/zsh/"
@@ -252,7 +260,7 @@ killall pulseaudio; sudo -u "$name" pulseaudio --start
 # This line, overwriting the `newperms` command above will allow the user to run
 # serveral important commands, `shutdown`, `reboot`, updating, etc. without a password.
 [ "$distro" = debian ] && newperms "%wheel ALL=(ALL) ALL #LARBS
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/pacman -Syu,/usr/bin/pacman -Syyu,/usr/bin/packer -Syu,/usr/bin/packer -Syyu,/usr/bin/systemctl restart network-manager,/usr/bin/rc-service NetworkManager restart,/usr/bin/pacman -Syyu --noconfirm,/usr/bin/loadkeys,/usr/bin/yay,/usr/bin/pacman -Syyuw --noconfirm"
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/systemctl restart network-manager,/usr/bin/loadkeys"
 
 # Last message! Install complete!
 finalize
