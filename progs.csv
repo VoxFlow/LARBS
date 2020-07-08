@@ -5,8 +5,8 @@
 #,ttf-linux-libertine,"provides the sans and serif fonts for LARBS."
 ,xcompmgr,"is for transparency and removing screen-tearing."
 #,xorg-xprop,"is a tool for detecting window properties."
-,libx11-xcb-dev
-,libxft-dev
+,libx11-xcb-dev,"required."
+,libxft-dev,"required."
 ,libxcb-res0-dev
 ,dosfstools,"allows your computer to access dos-like filesystems."
 ,libnotify,"allows desktop notifications."
