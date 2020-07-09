@@ -4,9 +4,9 @@
 #,xorg-xinit,"starts the graphical server."
 ,xcompmgr,"is for transparency and removing screen-tearing."
 #,xorg-xprop,"is a tool for detecting window properties."
-,libx11-xcb-dev
-,libxft-dev
-,libxcb-res0-dev
+,libx11-xcb-dev,"required."
+,libxft-dev,"required."
+,libxcb-res0-dev,"required."
 ,dosfstools,"allows your computer to access dos-like filesystems."
 ,libnotify,"allows desktop notifications."
 ,dunst,"is a suckless notification system."
