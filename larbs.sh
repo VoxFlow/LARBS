@@ -113,8 +113,12 @@ pamixerinstall() {
 	 rm -rf /tmp/"$1"*
          git clone https://github.com/cdemoulins/pamixer.git &&
 	 cd "$1"
-	 sudo make clean install >/dev/null 2>&1
+	 yes | sudo make clean install >/dev/null 2>&1 #Added "yes" so it won't hung'
 	 cd /tmp || return) ;}
+instZSHplugin() {
+        mkdir -p /usr/share/zsh/plugins
+        cd /usr/share/zsh/plugins
+        git clone https://github.com/zdharma/fast-syntax-highlighting; }
 
 maininstall() { # Installs all needed programs from main repo.
 	dialog --title "LARBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 5 70
@@ -233,8 +237,9 @@ ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 #	manualinstall $aurhelper || error "Failed to install AUR helper."
 	}
 
-lfinstall lf || exit
-pamixerinstall pamixer || exit
+lfinstall lf || error "failed."
+pamixerinstall pamixer || error "failed."
+instZSHplugin || error "failed."
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
