@@ -15,7 +15,7 @@ while getopts ":a:r:b:p:h" o; do case "${o}" in
 esac done
 
 [ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/lukesmithxyz/voidrice.git"
-[ -z "$progsfile" ] && progsfile="https://github.com/VoxFlow/LARBS-for-Debian/blob/master/progs.csv"
+[ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/VoxFlow/LARBS-for-Kali/master/progs.csv"
 #[ -z "$aurhelper" ] && aurhelper="yay"
 [ -z "$repobranch" ] && repobranch="master"
 
@@ -77,7 +77,7 @@ adduserandpass() { \
 
 refreshkeys() { \
 	dialog --infobox "Refreshing Arch Keyring..." 4 40
-	#pacman --noconfirm -Sy archlinux-keyring >/dev/null 2>&1
+	apt-get install kali-archive-keyring >/dev/null 2>&1
 	}
 
 newperms() { # Set special sudoers settings for install (or after).
@@ -113,7 +113,7 @@ pamixerinstall() {
 	 rm -rf /tmp/"$1"*
          git clone https://github.com/cdemoulins/pamixer.git &&
 	 cd "$1"
-	 sudo make install >/dev/null 2>&1
+	 sudo make clean install >/dev/null 2>&1
 	 cd /tmp || return) ;}
 
 maininstall() { # Installs all needed programs from main repo.
@@ -257,7 +257,7 @@ git update-index --assume-unchanged "/home/$name/FUNDING.yml"
 systembeepoff
 
 #Disable lightdm:
-systemctl disable lighdm
+sudo systemctl disable lightdm
 
 # Make zsh the default shell for the user.
 chsh -s /bin/zsh $name >/dev/null 2>&1
