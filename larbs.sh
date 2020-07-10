@@ -115,6 +115,7 @@ pamixerinstall() {
 	 cd "$1"
 	 yes | sudo make clean install >/dev/null 2>&1 #Added "yes" so it won't hung'
 	 cd /tmp || return) ;}
+
 instZSHplugin() {
         mkdir -p /usr/share/zsh/plugins
         cd /usr/share/zsh/plugins
@@ -131,8 +132,8 @@ gitmakeinstall() {
 	dialog --title "LARBS Installation" --infobox "Installing \`$progname\` ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 5 70
 	sudo -u "$name" git clone --depth 1 "$1" "$dir" >/dev/null 2>&1 || { cd "$dir" || return ; sudo -u "$name" git pull --force origin master;}
 	cd "$dir" || exit
-	make >/dev/null 2>&1
-	make install >/dev/null 2>&1
+	#make >/dev/null 2>&1
+	sudo make clean install >/dev/null 2>&1
 	cd /tmp || return ;}
 
 # aurinstall() { \
