@@ -172,6 +172,9 @@ putgitrepo() { # Downloads a gitrepo $1 and places the files in $2 only overwrit
 	sudo -u "$name" git clone --recursive -b "$branch" --depth 1 "$1" "$dir" >/dev/null 2>&1
 	sudo -u "$name" cp -rfT "$dir" "$2"
 	}
+#Cleaning up:
+cleanup() {
+	apt-get autoremove; apt-get autoclean;}
 
 #systembeepoff() { dialog --infobox "Getting rid of that retarded error beep sound..." 10 50
 #	rmmod pcspkr
@@ -215,8 +218,8 @@ installpkg git
 installpkg ntp
 
 #Update and Upgrade to make sure everything works:
-dialog --title "Update then Upgrade" --infobox "..." 5 70
-installpkg update && installpkg upgrade
+#dialog --title "Update then Upgrade" --infobox "..." 5 70
+#installpkg update && installpkg upgrade
 
 dialog --title "LARBS Installation" --infobox "Synchronizing system time to ensure successful and secure installation of software..." 4 70
 ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
@@ -270,7 +273,7 @@ chsh -s /bin/zsh $name >/dev/null 2>&1
 sudo -u "$name" mkdir -p "/home/$name/.cache/zsh/"
 
 # dbus UUID must be generated for Artix runit.
-dbus-uuidgen > /var/lib/dbus/machine-id
+#dbus-uuidgen > /var/lib/dbus/machine-id
 
 #Fix Java apps( e.g: BurpSuite ) font:
 echo _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=on' >> /etc/environment
