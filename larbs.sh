@@ -172,9 +172,9 @@ putgitrepo() { # Downloads a gitrepo $1 and places the files in $2 only overwrit
 	sudo -u "$name" cp -rfT "$dir" "$2"
 	}
 
-systembeepoff() { dialog --infobox "Getting rid of that retarded error beep sound..." 10 50
-	rmmod pcspkr
-	echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf ;}
+#systembeepoff() { dialog --infobox "Getting rid of that retarded error beep sound..." 10 50
+#	rmmod pcspkr
+#	echo "blacklist pcspkr" > /etc/modprobe.d/nobeep.conf ;}
 
 finalize(){ \
 	dialog --infobox "Preparing welcome message..." 4 50
@@ -259,7 +259,7 @@ git update-index --assume-unchanged "/home/$name/LICENSE"
 git update-index --assume-unchanged "/home/$name/FUNDING.yml"
 
 # Most important command! Get rid of the beep!
-systembeepoff
+#systembeepoff
 
 #Disable lightdm:
 sudo systemctl disable lightdm
