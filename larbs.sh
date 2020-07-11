@@ -241,15 +241,15 @@ ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 #	manualinstall $aurhelper || error "Failed to install AUR helper."
 	}
 
-lfinstall lf || error "failed."
-pamixerinstall pamixer || error "failed."
-instZSHplugin || error "failed."
-
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
 # the user has been created and has priviledges to run sudo without a password
 # and all build dependencies are installed.
 installationloop
+
+lfinstall lf || error "failed."
+pamixerinstall pamixer || error "failed."
+instZSHplugin || error "failed."
 
 dialog --title "LARBS Installation" --infobox "Finally, installing \`libxft-bgra\` to enable color emoji in suckless software without crashes." 5 70
 #yes | sudo -u "$name" $aurhelper -S libxft-bgra >/dev/null 2>&1
@@ -264,6 +264,8 @@ git update-index --assume-unchanged "/home/$name/FUNDING.yml"
 
 # Most important command! Get rid of the beep!
 #systembeepoff
+
+cleanup
 
 #Disable lightdm:
 sudo systemctl disable lightdm
